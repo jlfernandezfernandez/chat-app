@@ -43,8 +43,20 @@ const toastVariants = cva(
 const Toast = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Root>,
   React.ComponentPropsWithoutRef<typeof ToastPrimitives.Root> &
-    VariantProps<typeof toastVariants>
->(({ className, variant, ...props }, ref) => {
+    VariantProps<typeof toastVariants> & {
+      duration?: number // Añadimos esta propiedad
+    }
+>(({ className, variant, duration, ...props }, ref) => {
+  React.useEffect(() => {
+    if (duration !== undefined && duration > 0) {
+      const timer = setTimeout(() => {
+        props.onOpenChange?.(false)
+      }, duration)
+
+      return () => clearTimeout(timer)
+    }
+  }, [duration, props.onOpenChange])
+
   return (
     <ToastPrimitives.Root
       ref={ref}

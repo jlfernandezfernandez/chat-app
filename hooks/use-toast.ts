@@ -3,11 +3,11 @@
 // Inspired by react-hot-toast library
 import * as React from "react"
 
-import { Toaster } from "@/components/ui/toaster"
+import { ToastActionElement, ToastProps } from "@/components/ui/toast"
 
 
 const TOAST_LIMIT = 1
-const TOAST_REMOVE_DELAY = 1000000
+const TOAST_REMOVE_DELAY = 1000
 
 type ToasterToast = ToastProps & {
   id: string
@@ -138,9 +138,11 @@ function dispatch(action: Action) {
   })
 }
 
-type Toast = Omit<ToasterToast, "id">
+type Toast = Omit<ToasterToast, "id"> & {
+  duration?: number
+}
 
-function toast({ ...props }: Toast) {
+function toast({ duration, ...props }: Toast) {
   const id = genId()
 
   const update = (props: ToasterToast) =>
@@ -161,6 +163,13 @@ function toast({ ...props }: Toast) {
       },
     },
   })
+
+  // Si se proporciona una duración, configuramos el cierre automático
+  if (duration !== undefined && duration > 0) {
+    setTimeout(() => {
+      dismiss()
+    }, duration)
+  }
 
   return {
     id: id,

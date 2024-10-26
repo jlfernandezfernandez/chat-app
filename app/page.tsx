@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Send, RefreshCw, Trash2, Loader2 } from 'lucide-react';
+import { Send, RefreshCw, Trash2 } from 'lucide-react';
 import { LoadingDots } from '@/components/loading-dots';
 import { MarkdownContent } from '@/components/markdown-content';
 import { useToast } from '@/hooks/use-toast';
@@ -28,6 +28,7 @@ export default function Home() {
     toast({
       variant: "destructive",
       description: "Something went wrong. Please try again.",
+      duration: 2000,
     });
   };
 
@@ -111,7 +112,7 @@ export default function Home() {
             onClick={handleLoad}
             className="text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800"
           >
-            <RefreshCw className={loading ? 'animate-spin' : ''} />
+            <RefreshCw/>
           </Button>
           <Button
             variant="ghost"
