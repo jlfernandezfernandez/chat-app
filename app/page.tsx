@@ -98,28 +98,30 @@ export default function Home() {
   };
 
   return (
-    <div className="flex h-screen flex-col bg-background">
-      <header className="border-b border-border p-4 backdrop-blur-sm bg-background/30">
-        <div className="flex justify-end gap-2 max-w-4xl mx-auto">
+    <div className="flex flex-col min-h-screen bg-background">
+      <header className="sticky top-0 border-b border-border p-4 backdrop-blur-sm bg-background/30 z-10">
+        <div className="flex justify-between items-center max-w-4xl mx-auto">
+          <div className="flex gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onLoad}
+            >
+              <RefreshCw className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onDelete}
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </div>
           <ThemeToggle />
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onLoad}
-          >
-            <RefreshCw className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onDelete}
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
         </div>
       </header>
 
-      <div className="flex-1 overflow-y-auto p-4">
+      <main className="flex-1 overflow-y-auto p-4">
         <div className="space-y-6 max-w-4xl mx-auto">
           {messages.map((message, index) => (
             <div
@@ -143,8 +145,9 @@ export default function Home() {
           {loading && <LoadingDots />}
           <div ref={messagesEndRef} />
         </div>
-      </div>
-      <div className="border-t border-border p-4 backdrop-blur-sm bg-background/30">
+      </main>
+
+      <footer className="sticky bottom-0 border-t border-border p-4 backdrop-blur-sm bg-background/30">
         <form
           onSubmit={onSubmitQuery}
           className="flex gap-2 max-w-4xl mx-auto"
@@ -162,7 +165,7 @@ export default function Home() {
             <Send className="h-4 w-4" />
           </Button>
         </form>
-      </div>
+      </footer>
     </div>
   );
 }
