@@ -22,15 +22,12 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: "cover",
+  themeColor: 'var(--background)'
 };
 
 export const metadata: Metadata = {
   title: "Chatbot",
   description: "Created by Jordi",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "white" },
-    { media: "(prefers-color-scheme: dark)", color: "black" }
-  ],
 };
 
 export default function RootLayout({

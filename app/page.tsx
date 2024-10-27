@@ -9,6 +9,7 @@ import { LoadingDots } from '@/components/loading-dots';
 import { MarkdownContent } from '@/components/markdown-content';
 import { useToast } from '@/hooks/use-toast';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface Message {
   role: 'user' | 'assistant';
@@ -98,8 +99,8 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-background">
-      <header className="sticky top-0 border-b border-border p-4 backdrop-blur-sm bg-background/30 z-10">
+    <div className="flex flex-col min-h-screen">
+      <header className="sticky top-0 z-10 border-b border-grey bg-background p-4">
         <div className="flex justify-between items-center max-w-4xl mx-auto">
           <div className="flex gap-2">
             <Button
@@ -121,39 +122,41 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="flex-1 overflow-y-auto p-4">
-        <div className="space-y-6 max-w-4xl mx-auto">
-          {messages.map((message, index) => (
-            <div
-              key={index}
-              className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
+      <main className="flex-1 overflow-hidden relative my-20">
+        <ScrollArea>
+          <div className="space-y-6 max-w-4xl mx-auto p-4">
+            {messages.map((message, index) => (
               <div
-                className={`rounded-2xl px-4 py-2 max-w-[85%] shadow-sm ${message.role === 'user'
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-secondary text-secondary-foreground'
-                  }`}
+                key={index}
+                className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
-                {message.role === 'user' ? (
-                  <div>{message.content}</div>
-                ) : (
-                  <MarkdownContent content={message.content} />
-                )}
+                <div
+                  className={`rounded-2xl px-4 py-2 max-w-[85%] shadow-sm ${message.role === 'user'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-secondary text-secondary-foreground'
+                    }`}
+                >
+                  {message.role === 'user' ? (
+                    <div>{message.content}</div>
+                  ) : (
+                    <MarkdownContent content={message.content} />
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
-          {loading && <LoadingDots />}
-          <div ref={messagesEndRef} />
-        </div>
+            ))}
+            {loading && <LoadingDots />}
+            <div ref={messagesEndRef} />
+          </div>
+        </ScrollArea>
       </main>
 
-      <footer className="sticky bottom-0 border-t border-border p-4 backdrop-blur-sm bg-background/30">
+      <footer className="sticky bottom-0 z-10 border-t border-border bg-background p-4">
         <form
           onSubmit={onSubmitQuery}
           className="flex gap-2 max-w-4xl mx-auto"
         >
           <Input
-            placeholder="Type a message..."
+            placeholder="Chat with Jordix"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
@@ -162,7 +165,7 @@ export default function Home() {
             size="icon"
             disabled={loading}
           >
-            <Send className="h-4 w-4" />
+            <Send />
           </Button>
         </form>
       </footer>
