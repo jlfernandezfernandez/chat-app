@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Send, RefreshCw, Trash2 } from 'lucide-react';
+import { handleQuery, handleLoad, handleDelete } from './actions/chat';
 import { LoadingDots } from '@/components/loading-dots';
 import { MarkdownContent } from '@/components/markdown-content';
 import { useToast } from '@/hooks/use-toast';
@@ -33,7 +34,7 @@ export default function Home() {
     });
   };
 
-  const handleQuery = async (e: React.FormEvent) => {
+  const onSubmitQuery = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!query.trim() || loading) return;
 
@@ -42,15 +43,9 @@ export default function Home() {
     setLoading(true);
 
     try {
-      const res = await fetch('http://localhost:8080/query', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: query.trim() }),
-      });
-
-      const data = await res.json();
-      if (res.ok) {
-        setMessages(prev => [...prev, { role: 'assistant', content: data.message }]);
+      const result = await handleQuery(query.trim());
+      if (result.success) {
+        setMessages(prev => [...prev, { role: 'assistant', content: result.data.message }]);
       } else {
         showError();
       }
@@ -62,11 +57,11 @@ export default function Home() {
     }
   };
 
-  const handleLoad = async () => {
+  const onLoad = async () => {
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:8080/load', { method: 'POST' });
-      if (res.ok) {
+      const result = await handleLoad();
+      if (result.success) {
         setMessages([{
           role: 'assistant',
           content: 'Knowledge base loaded. How can I help you?'
@@ -82,12 +77,11 @@ export default function Home() {
     }
   };
 
-  const handleDelete = async () => {
+  const onDelete = async () => {
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:8080/delete', { method: 'DELETE' });
-
-      if (res.ok) {
+      const result = await handleDelete();
+      if (result.success) {
         setMessages([{
           role: 'assistant',
           content: 'Knowledge has been deleted.'
@@ -111,14 +105,14 @@ export default function Home() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={handleLoad}
+            onClick={onLoad}
           >
             <RefreshCw className="h-4 w-4" />
           </Button>
           <Button
             variant="ghost"
             size="sm"
-            onClick={handleDelete}
+            onClick={onDelete}
           >
             <Trash2 className="h-4 w-4" />
           </Button>
@@ -134,8 +128,8 @@ export default function Home() {
             >
               <div
                 className={`rounded-2xl px-4 py-2 max-w-[85%] shadow-sm ${message.role === 'user'
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-secondary text-secondary-foreground'
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-secondary text-secondary-foreground'
                   }`}
               >
                 {message.role === 'user' ? (
@@ -150,10 +144,9 @@ export default function Home() {
           <div ref={messagesEndRef} />
         </div>
       </div>
-
       <div className="border-t border-border p-4 backdrop-blur-sm bg-background/30">
         <form
-          onSubmit={handleQuery}
+          onSubmit={onSubmitQuery}
           className="flex gap-2 max-w-4xl mx-auto"
         >
           <Input
